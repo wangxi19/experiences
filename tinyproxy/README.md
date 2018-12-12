@@ -8,7 +8,7 @@
 - /usr/local/bin/tinyproxy -c /usr/local/etc/tinyproxy/tinyproxy.conf -d
 
 运行正常, 设置浏览器代理使用 ip:8889, 访问http://www.baidu.com, 正常, https://www.baidu.com 正常. 访问 https://www.google.com, 报错 **Connection was reset**
-找了半天, 然后在client和server上都抓包看, 发现client和server直接tcp连接正常建立, 当client 发出 `CONNECT www.google.com:443`(httpproxy规定的行为)后,
+找了半天, 然后在client和server上都抓包看`tcpdump -i eth0 -w ~/tinyproxy.cap 'tcp port 8889'`, 发现client和server直接tcp连接正常建立, 当client 发出 `CONNECT www.google.com:443`(httpproxy规定的行为)后,
 server会出现两种情况(目前测试发现两种情况): 
 - 1. server收到client发出的`CONNECT www.google.com:443` 然后正常ack回复, 然后就收到**伪造的client**(我在我client上有抓包, 明确知道client没有发送tcp reset) 发送的 tcp reset请求,于是 server释放了这次连接
    这种情况下, client会发生和server相同的情况, client会收到**伪造的server的tcp reset 请求**(server上有抓包, 明确知道server没有reset这次连接)

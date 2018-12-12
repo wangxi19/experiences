@@ -20,4 +20,4 @@ server会出现两种情况(目前测试发现两种情况):
 世风日下...
 
 第一种情况的图片:
-![tinyproxy_1](https://github.com/wangxi19/traps/images/tinyproxy_1.png)
+![tinyproxy_1](https://github.com/wangxi19/traps/blob/master/images/tinyproxy_1.png)

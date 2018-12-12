@@ -16,4 +16,8 @@ server会出现两种情况(目前测试发现两种情况):
 - 2. server没收到client发出的`CONNECT www.google.com:443`, 收到了**伪造的client发送的错误ack回复**, 导致server误以为通信过程中出错, 于是发送tcp reset, client正常收到reset
 
 一脸懵逼的client :)
+
 世风日下...
+
+第一种情况的图片:
+![tinyproxy_1](https://github.com/wangxi19/traps/images/tinyproxy_1.png)

@@ -31,9 +31,11 @@ debian上推荐使用 shadowsocks-qt5
 qt的client和许多命令行client一样有点奇怪, 它会在本地监听一个端口, 用于开启socks5 或 https的代理服务, 你用client连接到server, 成功后,
 把你的浏览器proxy改为 你client在本地监听的地址,如(127.0.0.1:1080), 然后完成.
 原理: 你浏览器访问网址, 把你的client(也就是ss-qt5)作为proxy, 你的client收到的任何incoming数据包都会转发往server, server再给你转发一次
+
 **Note** go的client不支持httpsproxy, 只支持socks5, 也就是你如果用go的client, 也就是你用go的client你本地开启的proxy只支持socks5的代理(简而言之, 浏览器要使用又还需额外配置)
 大多数命令行client也如此, 所以选择`shadowsocks-qt5`
 
 windows 和 android上推荐使用outline, https://shadowsocks.org/en/download/clients.html, android 在google play store中, 免费的, windows的版本直接从前面连接去下载，
 然后运行, 根据服务端的配置 去 https://shadowsocks.org/en/config/quick-guide.html 网址下生成链接地址(Try it yourself)
+
 **Note** 完成后无需额外配置

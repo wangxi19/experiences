@@ -6,7 +6,7 @@
 
 `$git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim`
 
-- install **gmarik/Vundle.vim**
+- install **gmarik/Vundle.vim** && **Valloric/YouCompleteMe**
 
 `$vim ~/.vimrc`, and add the following content to top of file
 ```
@@ -28,6 +28,6 @@ syntax on
 ```
 Type `:w` to save startup script(~/.vimrc), then type `:PluginInstall` to install these plugins, ordered type `:w` and `:wq` when you can see **Done** on the bottom of installation page, you on the cmd now, and then type `$cd ~/.vim/bundle/YouCompleteMe/ && ./install.py --gocode-completer` to install the YCM's golang extension
 
-- install gocode
+- install **gocode**
 
 `$go get -u github.com/nsf/gocode`

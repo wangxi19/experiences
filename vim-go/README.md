@@ -26,7 +26,7 @@ call vundle#end()
 filetype plugin indent on
 syntax on
 ```
-Type `:w` to save startup script(~/.vimrc), then type `:PluginInstall` to install these plugins, ordered type `:w` and `:wq` when you can see **Done** on the bottom of installation page, you on the cmd now, and then type `$cd ~/.vim/bundle/YouCompleteMe/ && ./install.py --gocode-completer` to install the YCM's golang extension
+Type `:wq` to save and quit startup script(~/.vimrc), and type `$vim` to reopen vim and loading the new startup script(`~/.vimrc`), then type `:PluginInstall` to install these plugins, ordered type `:w` and `:wq` when you can see **Done** on the bottom of installation page, you on the cmd now, and then type `$cd ~/.vim/bundle/YouCompleteMe/ && ./install.py --gocode-completer` to install the YCM's golang extension
 
 - install **gocode**
 

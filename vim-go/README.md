@@ -2,12 +2,13 @@
 
 - install **vundle.vim**
 
-type `$mkdir ~/.vim/bundle`
+`$mkdir ~/.vim/bundle`
+
 `$git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim`
 
 - install **gmarik/Vundle.vim**
 
-vim ~/.vimrc, and add the following content to top of file
+`$vim ~/.vimrc`, and add the following content to top of file
 ```
 set nocompatible
 set number
@@ -29,4 +30,4 @@ Type `:w` to save startup script(~/.vimrc), then type `:PluginInstall` to instal
 
 - install gocode
 
-type `$go get -u github.com/nsf/gocode`
+`$go get -u github.com/nsf/gocode`

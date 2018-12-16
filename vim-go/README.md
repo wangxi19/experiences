@@ -31,3 +31,18 @@ Type `:w` to save startup script(~/.vimrc), then type `:PluginInstall` to instal
 - install **gocode**
 
 `$go get -u github.com/nsf/gocode`
+
+Configure gocode
+
+ $ cd $GOPATH/src/github.com/nsf/gocode/vim
+ $ ./update.sh
+ $ gocode set propose-builtins true
+ propose-builtins true
+ $ gocode set lib-path "/home/border/gocode/pkg/linux_amd64"
+ lib-path "/home/border/gocode/pkg/linux_amd64"
+ $ gocode set
+ propose-builtins true
+ lib-path "/home/border/gocode/pkg/linux_amd64"
+Explanation of gocode configuration:
+
+propose-builtins: specifies whether or not to open intelligent completion; false by default. lib-path: gocode only searches for packages in $GOPATH/pkg/$GOOS_$GOARCH and $GOROOT/pkg/$GOOS_$GOARCH. This setting can be used to add additional paths.

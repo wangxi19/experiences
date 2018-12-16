@@ -6,7 +6,7 @@
 
 `$git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim`
 
-- install **gmarik/Vundle.vim** && **Valloric/YouCompleteMe**
+- install **gmarik/Vundle.vim** && **Valloric/YouCompleteMe** && **dgryski/vim-godef**
 
 `$vim ~/.vimrc`, and add the following content to top of file
 ```
@@ -21,6 +21,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'fatih/vim-go'
+Plugin 'dgryski/vim-godef'
 
 call vundle#end()
 filetype plugin indent on

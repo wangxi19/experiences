@@ -18,7 +18,7 @@
 - 先将视频转化为帧内编码
   
   `$ffmpeg -i nobody.mp4 -qscale 0 -intra nobody_entire.mp4`
-  然后在重复**视频剪辑**, 将输入文件 `nobody.mp4` 替换为 `nobody_entir.mp4`,即可.
+  然后在重复**视频剪辑**, 将输入文件 `nobody.mp4` 替换为 `nobody_entire.mp4`,即可.
 
 ##  视频合并
 
@@ -30,4 +30,5 @@
 
 `$ffmpeg -i nobody_00_30.mp4 -vf "setpts=2*PTS" nobody_0.5rate_.mp4`
 
+这样就将视频改为 `0.5` 倍速度了
 

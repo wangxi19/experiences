@@ -1,4 +1,4 @@
-# ffmpeg 格式转换 视频剪辑 视频合并 播放速度
+# ffmpeg 格式转换 视频剪辑 视频合并 播放速度 提取音频
 
 ## 格式转换
 
@@ -32,3 +32,7 @@
 
 这样就将视频改为 `0.5` 倍速度了
 
+## 提取音频
+
+`$ffmpeg -i nobody.mp4 -vn -y -acodec copy nobody.aac` 或 `$ffmpeg -i nobody.mp4 -vn -y -acodec copy nobody.m4a`,
+然后再转化为 如 `mp3` 格式 `$ffmpeg -i nobody.aac nobody.mp3`

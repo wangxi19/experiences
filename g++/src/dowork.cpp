@@ -1,6 +1,6 @@
 #include <stdio.h>
 
 void doWork() {
-    printf("Hello %s\n", "world");
+    printf("Work is finished!\n");
     return;
 }

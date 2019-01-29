@@ -14,11 +14,13 @@ bool ready = false;
 bool processed = false;
 
 int main(int argc, char* argv[]) {
+  
+      doWork();
+#if 0
   auto f = []{
       std::unique_lock<std::mutex> lk(m, std::defer_lock);
       lk.lock();
       cv.wait(lk, []{return ready;});
-      doWork();
       data += " 已处理完成!";
       std::cout << data << std::endl;
 
@@ -42,5 +44,6 @@ int main(int argc, char* argv[]) {
   }
 
   t.join();
+#endif
   return 0;
 }

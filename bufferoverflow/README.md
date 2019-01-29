@@ -93,8 +93,8 @@ nc -lvp 4444 &
 gdb bufferoverflow
 ```
 
-![breakpoint](https://github.com/wangxi19/traps/blob/master/images/breakpoint.png)
+![breakpoint](https://github.com/wangxi19/experiences/blob/master/bufferoverflow/image/breakpoint.png)
 
-![beforexploiting](https://github.com/wangxi19/traps/blob/master/images/beforexploiting.png)
+![beforexploiting](https://github.com/wangxi19/experiences/blob/master/bufferoverflow/image/beforexploiting.png)
 
-![afterexploiting](https://github.com/wangxi19/traps/blob/master/images/afterexploiting.png)
+![afterexploiting](https://github.com/wangxi19/experiences/blob/master/bufferoverflow/image/afterexploiting.png)

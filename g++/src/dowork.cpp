@@ -5,6 +5,9 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <pthread.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 static void clearScreen() {
   // CSI[2J clears screen, CSI[H moves the cursor to top-left corner
@@ -78,9 +81,59 @@ void task_flush() {
   std::cout << "Hello world" << std::endl;
 }
 
+void* myThreadFun(void *vargp) {
+  (void*)vargp;
+  fprintf(stdout, "Thread is working\n");
+  return NULL;
+}
+
+void task_c_thread() {
+  pthread_t t;
+  pthread_create(&t, NULL, myThreadFun, NULL);  
+
+  pthread_join(t, NULL);
+  fprintf(stdout, "[result]: \n");
+}
+
+void task_c_fork() {
+    fprintf(stdout, "Before fork\n");
+    fork();
+    fprintf(stdout, "After fork\n");
+    myThreadFun(NULL);
+}
+
+int task_c_file() {
+    FILE* fp = fopen("/root/Top24Million-WPA-probable-v2.txt", "r");
+    if (!fp) {
+        fprintf(stderr, "File opening failed\n");
+        return EXIT_FAILURE;
+    }
+    
+    char buf[1024];
+    memset((void*)buf, '\0', 1024);
+    int cnt = 10;
+    while (fgets(buf, sizeof buf, fp) != NULL && cnt-- > 0)
+     fprintf(stdout, "%s", buf); 
+
+    fclose(fp);
+    return 0;
+}
+
+void task_wchar_to_char() {
+    char* str = new char[1024]{'\0'};
+    wchar_t array[] = L"Hello World";
+    wcstombs(str, array, 1024);
+    fprintf(stdout, "task_wchar_to_char: %s\n", str);
+    delete str;
+}
+
 void doWork() {
 //    task_atomic();
-    task_flush();
+//    task_flush();
+//    task_c_thread();
+//    task_c_fork();
+//    task_c_file();
+    task_wchar_to_char();
     return;
 }
 

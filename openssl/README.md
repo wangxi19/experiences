@@ -13,7 +13,7 @@ openssl genrsa -out private_key.pem 2048
 openssl rsa -outform PEM -pubout -in private_key.pem -out pub_key.pem
 
 #or using DER (the binary format)
-openssl rsa -outform DER -pubout -in private_key.pem -out pub_key.pem
+openssl rsa -outform DER -pubout -in private_key.pem -out pub_key.der
 
 #Using public key to encrypt
 echo "hello" | openssl rsautl -encrypt -pubin -inkey ./public_key.pem > msg.enc

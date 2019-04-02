@@ -33,5 +33,15 @@ openssl pkcs8 -in pkcs8_private_key.pem -out private_key.cp.pem -nocrypt -inform
 #using PKCS8 to decrypt msg
 openssl rsautl -decrypt -inkey pkcs8_private_key.pem < msg.enc
 
+#***************encryption padding format******************
+#using -pkcs to indicate Using PKCS#1 v1.5 padding (default) 
+echo "hello" | openssl rsautl -encrypt -pubin -keyform PEM -inkey public_key.pem | openssl rsautl -decrypt -keyform PEM -inkey pkcs8_private_key.pem -pkcs
+
+#some times, may be need to decrypt other data
+#-raw may be is needed
+#using -raw indicate without padding in here
+openssl rsautl -decrypt -keyform PEM -inkey pkcs8_private_key.pem -raw < other.data.enc
+
+
 ```
 

@@ -11,6 +11,7 @@ URL:		www
 BuildRequires:	bash
 BuildRequires:	make
 BuildRequires:	gcc
+#installation requires
 Requires:	bash
 
 %description
@@ -33,22 +34,23 @@ exit
 
 %pre
 #pre files
-echo '**************prepareing installation**************'
+echo 'prepareing installation'
 exit
 
 %post
 #post files
-echo '**************installation completed, enjoy it :)**************'
+echo 'installation completed, enjoy it :)'
 exit
 
 #%setup -q
 
 %build
 cd %{_topdir}/SOURCES/hello/ && \
-make PREFIX=/usr TARGET=myhello 
+make PREFIX=/usr/local TARGET=myhello 
 exit
 
 %configure
+#%{_smp_mflags} is -j4
 make %{?_smp_mflags}
 exit
 
@@ -58,7 +60,7 @@ cd %{_topdir}/SOURCES/hello/ && make install PREFIX=$RPM_BUILD_ROOT/usr/local TA
 exit
 
 %files
-#in %{buildpath}, the entire dir structure is mirror from root path (/)
+#in %{buildroot}, the entire dir structure is mirror from root path (/)
 #the below list files, all the paths are relative path, in %{buildroot}
 #the below files will be install to corresponding path on target computer
 #example:

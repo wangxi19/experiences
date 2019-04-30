@@ -1,2 +1,2 @@
-# traps
-用于记录遇到的各种坑
+# experiences
+experiences are used to level up

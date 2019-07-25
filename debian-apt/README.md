@@ -19,3 +19,5 @@ on the page, you will see the available repository url like below:
 deb http://ftp.de.debian.org/debian buster main 
 请使用最终确定的源镜像替换 ftp.de.debian.org/debian。
 ```
+
+notes: after added the repository to /etc/apt/sources.list, you need executing `apt-get clean && apt-get update` to clean and update apt cache

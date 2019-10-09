@@ -68,7 +68,7 @@ blockdev --getbsz /dev/sdb
 #Then allocate fixed size file, the file hasn't punch hole in my condition
 cd /tmp/m
 #example: we preallocate 100 files which has fixed size and are in successive physical address of usb disk
-for ((i=0;i<100;i++)); do fallocate -l $((4096*1024*100)) ./${i}.fstor; done;
+for ((i=0;i<100;i++)); do fallocate -l $((4096*1000)) ./${i}.fstor; done;
 ```
 
 ## Step5: Check these files whether are in successive physical address
@@ -89,6 +89,11 @@ filefrag -v /tmp/m/0.fstor /tmp/m/1.fstor /tmp/m/2.fstor
 #/tmp/m/2.fstor: 1 extent found
 
 ##we can see that these's physical address are successive: 99331..    100330 100331..    101330 101331..    102330
+
+####################
+#Whether the physical address is successive depends on the file system. Generally, the file system just formatted, and it is not used,then pre-allocates the file, the physical address will be successive. Because blcok fragments have not yet been produced
+
+###################
 
 ##we can use `ls` or `du` to display the number of blocks that has been used with each file
 ##we will see that 1000 blocks are used with each file. (because my file fixed size is 4096*1000 (4MB))

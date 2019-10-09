@@ -68,5 +68,48 @@ blockdev --getbsz /dev/sdb
 #Then allocate fixed size file, the file hasn't punch hole in my condition
 cd /tmp/m
 #example: we preallocate 100 files which has fixed size and are in successive physical address of usb disk
-for $((i=0;i<100;i++)); do fallocate -l $((4096*1024*100)) ./${i}.fstor; done;
+for ((i=0;i<100;i++)); do fallocate -l $((4096*1024*100)) ./${i}.fstor; done;
+```
+
+## Step5: Check these files whether are in successive physical address
+```shell
+filefrag -v /tmp/m/0.fstor /tmp/m/1.fstor /tmp/m/2.fstor
+#Filesystem type is: ef53
+#File size of /tmp/m/0.fstor is 4096000 (1000 blocks of 4096 bytes)
+# ext:     logical_offset:        physical_offset: length:   expected: flags:
+#   0:        0..     999:      99331..    100330:   1000:             last,unwritten,eof
+#/tmp/m/0.fstor: 1 extent found
+#File size of /tmp/m/1.fstor is 4096000 (1000 blocks of 4096 bytes)
+# ext:     logical_offset:        physical_offset: length:   expected: flags:
+#   0:        0..     999:     100331..    101330:   1000:             last,unwritten,eof
+#/tmp/m/1.fstor: 1 extent found
+#File size of /tmp/m/2.fstor is 4096000 (1000 blocks of 4096 bytes)
+# ext:     logical_offset:        physical_offset: length:   expected: flags:
+#   0:        0..     999:     101331..    102330:   1000:             last,unwritten,eof
+#/tmp/m/2.fstor: 1 extent found
+
+##we can see that these's physical address are successive: 99331..    100330 100331..    101330 101331..    102330
+
+##we can use `ls` or `du` to display the number of blocks that has been used with each file
+##we will see that 1000 blocks are used with each file. (because my file fixed size is 4096*1000 (4MB))
+ls -s --block-size=4096 /tmp/m/
+total 100000
+#1000 0.fstor   1000 18.fstor  1000 26.fstor  1000 34.fstor  1000 42.fstor  1000 50.fstor  1000 59.fstor  1000 67.fstor  #1000 75.fstor  1000 83.fstor  1000 91.fstor  1000 9.fstor
+#1000 10.fstor  1000 19.fstor  1000 27.fstor  1000 35.fstor  1000 43.fstor  1000 51.fstor  1000 5.fstor   1000 68.fstor  #1000 76.fstor  1000 84.fstor  1000 92.fstor
+#1000 11.fstor  1000 1.fstor   1000 28.fstor  1000 36.fstor  1000 44.fstor  1000 52.fstor  1000 60.fstor  1000 69.fstor  #1000 77.fstor  1000 85.fstor  1000 93.fstor
+#1000 12.fstor  1000 20.fstor  1000 29.fstor  1000 37.fstor  1000 45.fstor  1000 53.fstor  1000 61.fstor  1000 6.fstor   #1000 78.fstor  1000 86.fstor  1000 94.fstor
+#1000 13.fstor  1000 21.fstor  1000 2.fstor   1000 38.fstor  1000 46.fstor  1000 54.fstor  1000 62.fstor  1000 70.fstor  #1000 79.fstor  1000 87.fstor  1000 95.fstor
+#1000 14.fstor  1000 22.fstor  1000 30.fstor  1000 39.fstor  1000 47.fstor  1000 55.fstor  1000 63.fstor  1000 71.fstor  #1000 7.fstor   1000 88.fstor  1000 96.fstor
+#1000 15.fstor  1000 23.fstor  1000 31.fstor  1000 3.fstor   1000 48.fstor  1000 56.fstor  1000 64.fstor  1000 72.fstor  #1000 80.fstor  1000 89.fstor  1000 97.fstor
+#1000 16.fstor  1000 24.fstor  1000 32.fstor  1000 40.fstor  1000 49.fstor  1000 57.fstor  1000 65.fstor  1000 73.fstor  #1000 81.fstor  1000 8.fstor   1000 98.fstor
+#1000 17.fstor  1000 25.fstor  1000 33.fstor  1000 41.fstor  1000 4.fstor   1000 58.fstor  1000 66.fstor  1000 74.fstor  #1000 82.fstor  1000 90.fstor  1000 99.fstor
+
+#or use du -s --block-size=4096 /tmp/m/* 
+du -s --block-size=4096 /tmp/m/* 
+#1000	/tmp/m/0.fstor
+#1000	/tmp/m/10.fstor
+#1000	/tmp/m/11.fstor
+#1000	/tmp/m/12.fstor
+
+#Note: these block quantities in du or ls are equivalent because these files haven't punch hole
 ```

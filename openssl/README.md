@@ -7,9 +7,10 @@
 openssl genrsa -out private_key.pem 2048
 
 #Using rsa private key to generate public key
-#PEM and DER are the encoding format, PEM is plaintext format(like this: ---BEGIN--- ---END---), DER is binary format 
+#Both PEM and DER are the encoding format, PEM is plaintext format(like this: ---BEGIN--- ---END---), 
+#   DER is binary format 
 #CRT and CER are the certificate format
-#Both four contain the public key
+#Both four of above contain the public key
 openssl rsa -outform PEM -pubout -in private_key.pem -out pub_key.pem
 
 #or using DER (the binary format)
@@ -37,18 +38,18 @@ openssl rsautl -decrypt -inkey pkcs8_private_key.pem < msg.enc
 #using -pkcs to indicate Using PKCS#1 v1.5 padding (default) 
 echo "hello" | openssl rsautl -encrypt -pubin -keyform PEM -inkey public_key.pem | openssl rsautl -decrypt -keyform PEM -inkey pkcs8_private_key.pem -pkcs
 
-#some times, may be need to decrypt other data
-#-raw may be is needed
+#some times, may need to decrypt other data
+#-raw may be needed
 #using -raw indicate without padding in here
 openssl rsautl -decrypt -keyform PEM -inkey pkcs8_private_key.pem -raw < other.data.enc
 
-#using -raw to encrypt, the data size(bits) must be equal to key length which using to generate rsa private key, above is 2048 bits
-#so if using -raw to encrypt, data size must be 256 bytes(2048 bits)
-#because rsa algorithm need data is aligned
+#using -raw to encrypt, the data size(bits) must be equal to the key length which was used to generate rsa private key,the above length is 2048 bits
+#so if using -raw to encrypt data, the data size must be integral multiple of 256 bytes(2048 bits)
+#because rsa algorithm need that the data is aligned
 
 rm -f /tmp/512.bytes; for ((i=0; i<256; i++)); do echo 2 >> /tmp/512.bytes; done; dd if=/tmp/512.bytes count=1 bs=256 | head -c 256 | openssl rsautl -encrypt -pubin -inkey public_key.pem -raw | openssl rsautl -decrypt -inkey pkcs8_private_key.pem -raw; rm -f /tmp/512.bytes;
 
-#Note: can use -raw to decrypt any padding type of data, because -raw just think the data has no padding, so after decrypt, need to manually remove padding by yourself
+#Note: can use -raw to decrypt an paded data, because -raw just think the data has no padding, so after decrypted, need to manually remove padding by yourself
 #Padding maybe imcompatible between different program language(Example: java and c++'s openssl), therefor need to use -raw to decrypt data normally, and remove the language dependent padding manually
 
 ```

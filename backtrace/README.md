@@ -28,7 +28,8 @@ void handler(int sig) {
 int main () {
   signal(SIGSEGV, handler);
 
-  /*must call the function after program crash*/
+  /*must call the function befor program crash*/
+  /*and after all ".so" has been loaded*
   getspam();
 
   std::vector<int> a;

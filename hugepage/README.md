@@ -43,7 +43,7 @@ reboot
 cat /proc/sys/vm/nr_hugepages
 #256
 
-## but if you wantn't reboot, try to execute this below repeatedly until you get enough hugepages.(pure luck, if you stop more programs, the higher your probability)
+## but if you don't want reboot, try to execute this below repeatedly until you get enough hugepages.(pure luck, if you stop more programs, the higher your probability)
 sync; echo 3 > /proc/sys/vm/drop_caches; sysctl -p; cat /proc/sys/vm/nr_hugepages
 #56
 sync; echo 3 > /proc/sys/vm/drop_caches; sysctl -p; cat /proc/sys/vm/nr_hugepages

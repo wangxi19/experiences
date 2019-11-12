@@ -22,7 +22,7 @@ grep "Huge" /proc/meminfo
 
 ##2. make hugepages
 ##how many hugepages do you want to get?
-##256 number hugepages, and echo hugepage size is 2MB(the default size)
+##256 number hugepages, and each hugepage size is 2MB(the default size)
 cat >> /etc/sysctl.conf << EOF
 vm.nr_hugepages=256
 EOF

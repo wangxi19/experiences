@@ -70,7 +70,7 @@ fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 ## The role of mmap is to map the physical address to the memory. operation on the memory address is synchronous to the mapped physical address. in this condition the 'physical address' is the hugepage memory. so you operate the mapped address is equal to operate hugepages memory
 ```
 
-##External link
+## External link
 
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/map_hugetlb.c
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/hugepage-shm.c

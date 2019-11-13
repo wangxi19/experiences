@@ -58,6 +58,8 @@ mountpoint /dev/hugepages; if [ `echo $?` != 0 ]; then mount -t hugetlbfs -o mod
 
 ##4. use hugepages
 ##use 10 hugepages
+fallocate --version
+#fallocate from util-linux 2.34
 fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 #grep "HugePages_Total - HugePages_Free" == 10
 ##Note. if you use truncate -s $((2*1024*1024*10)) /dev/hugepages/hg1.
@@ -69,6 +71,7 @@ fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 ```
 
 ##External link
+
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/map_hugetlb.c
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/hugepage-shm.c
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/hugepage-mmap.c

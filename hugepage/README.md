@@ -67,6 +67,9 @@ fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 
 ## when you preallocate fixed size hg file, you can use it through mmap (in c++, see the main.cpp), using the hg file is equal to using hugepage memory directly
 ## or you also haven't to preallocate fixed size hg file, you can use open(c++) to create a empty hg file, and then use mmap's length parameter to enlarge the hg size.
+##if use MAP_SHARED FLAG.
+##Share  this  mapping.   Updates to the mapping are visible to other processes mapping
+##the same region, ***and (in the case of file-backed mappings) are carried through to the underlying  file.***
 ## The role of mmap is to map the physical address to the memory. operation on the memory address is synchronous to the mapped physical address. in this condition the 'physical address' is the hugepage memory. so you operate the mapped address is equal to operate hugepages memory
 ```
 

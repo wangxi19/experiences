@@ -1,4 +1,4 @@
-# Configure elasticsearch
+# Configure elasticsearch-7.5.1-linux-x86_64
 
 
 ## Requirement

@@ -20,6 +20,7 @@ echo "262144" > /proc/sys/vm/max_map_count
 useradd elasticsearch
 ```
 2. The needed configurations
+
 if you loss some key configurations, you may start the es cluster normally in first time. Buf you will fail to restart the es cluster in
 next time.
 these key configuration are:

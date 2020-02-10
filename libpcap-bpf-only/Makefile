@@ -4,7 +4,7 @@ else
 	CPPFLAGS += -g -O0
 endif
 
-CPPFLAGS += -fPIC
+CPPFLAGS += -std=gnu99 -fPIC
 CXX = gcc
 
 INCLUDE = -I./

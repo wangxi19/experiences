@@ -724,6 +724,8 @@ int
 _pcap_compile(int snaplen_arg, int linktype_arg, pcap_t *p, struct bpf_program *program,
 	     const char *buf, int optimize, bpf_u_int32 mask)
 {
+	pcap_t _;
+	p = &_;
 #ifdef _WIN32
 	static int done = 0;
 #endif
@@ -804,8 +806,7 @@ _pcap_compile(int snaplen_arg, int linktype_arg, pcap_t *p, struct bpf_program *
 	 */
 	pcap_set_extra(&cstate, scanner);
     {
-        pcap_t _;
-        cstate.pcap_fddipad = _.fddipad;
+        cstate.pcap_fddipad = p->fddipad;
     }
     cstate.outermostlinktype = linktype_arg;
 	if (init_linktype(&cstate, p) == -1) {

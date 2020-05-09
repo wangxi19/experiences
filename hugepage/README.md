@@ -73,6 +73,47 @@ fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 ## The role of mmap is to map the physical address to the memory. operation on the memory address is synchronous to the mapped physical address. in this condition the 'physical address' is the hugepage memory. so you operate the mapped address is equal to operate hugepages memory
 ```
 
+## How to free used hugepages
+
+some times, hugepages are still used after my application exited.
+`cat /proc/meminfo/ | grep Huge`
+
+```
+AnonHugePages:    759808 kB
+ShmemHugePages:        0 kB
+HugePages_Total:    1024
+HugePages_Free:     1023  //one hugepage is used
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:         2097152 kB
+```
+but all applications which use hugepages exited. Why is the hugepage still used?
+the reason is that the hugepage file still eixts. if delete the file, hugepage will be freed
+`mount -l |grep hugetlbfs`
+```
+hugetlbfs on /dev/hugepages type hugetlbfs (rw,relatime,pagesize=2M)
+```
+
+`ls -lh /dev/hugepages`
+```
+total 2.0M
+-rw------- 1 root root 2.0M May  9 03:19 rtemap_0
+```
+
+`rm -f /dev/hugepages/* && cat /proc/meminfo | grep Huge`
+```
+AnonHugePages:    761856 kB
+ShmemHugePages:        0 kB
+HugePages_Total:    1024
+HugePages_Free:     1024  //that hugepage was freed already
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:         2097152 kB
+```
+
+
 ## External link
 
 https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/vm/map_hugetlb.c

@@ -76,7 +76,7 @@ fallocate -l $((2*1024*1024*10)) /dev/hugepages/hg1
 ## How to free used hugepages
 
 some times, hugepages are still used after my application exited.
-`cat /proc/meminfo/ | grep Huge`
+`cat /proc/meminfo | grep Huge`
 
 ```
 AnonHugePages:    759808 kB

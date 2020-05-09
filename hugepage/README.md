@@ -90,6 +90,7 @@ Hugetlb:         2097152 kB
 ```
 but all applications which use hugepages exited. Why is the hugepage still used?
 the reason is that the hugepage file still eixts. if delete the file, hugepage will be freed
+
 `mount -l |grep hugetlbfs`
 ```
 hugetlbfs on /dev/hugepages type hugetlbfs (rw,relatime,pagesize=2M)

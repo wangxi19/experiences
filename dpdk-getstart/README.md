@@ -69,6 +69,14 @@ test -l0,1 -n1
 
 refer to `experiences/hugepage` to set up hugepages
 
+# How to compile in c++
+
+These below flags must be added in Makefile, otherwise will arise error `error: expected ')' before 'PRIu64'`
+
+```
+CFLAGS += -D__STDC_LIMIT_MACROS
+CFLAGS += -D__STDC_FORMAT_MACROS
+```
 
 # Issues
 

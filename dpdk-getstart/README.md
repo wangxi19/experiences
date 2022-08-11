@@ -12,7 +12,11 @@ reference `https://core.dpdk.org/supported/`
 
 shutdown vm, then edit the vm .vmx file that is vm configuration file(in the vm installation folder), change **ethernetX.virtualDev = **, from **e1000** to **vmxnet3**
 
-2.create virtual network for thoese nics
+2.display nic numbers of tx、rx queues
+
+`cat /proc/interrupts | grep ens`
+
+3.create virtual network for thoese nics
 
 you can create any host only network for thoese nics for communication.
 

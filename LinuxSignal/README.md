@@ -29,4 +29,4 @@
  ### Some trick
  
  If child has more than one status changes in a vary short time. The parent **SIGCHLD** handler may be called only once, waitpid will get the child current status, 
- I guess kernel only remain the last one status for optimizing performance. 
+ I guess kernel has a queue to cache signals and the queue size is small, so too many signals emitted in short time may be lossed. 

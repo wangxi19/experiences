@@ -4,6 +4,16 @@
 
 reference `https://core.dpdk.org/supported/`
 
+# Support on virtual machine
+
+1.change the default virtual nic from e1000 to vmxnet3
+**e1000 only support one tx、rx queue, vmxnet3 support 4 tx、rx queue**
+shutdown vm, then edit the vm .vmx file that is vm configuration file(in the vm installation folder), change **ethernetX.virtualDev = **, from **e1000** to **vmxnet3**
+
+2.create virtual network for thoese nics
+you can create any host only network for thoese nics for communication.
+Select vmware menu -> select **Edit** -> virtual network editor
+
 # Download and compile
 
 reference 'https://core.dpdk.org/doc/quick-start/'.

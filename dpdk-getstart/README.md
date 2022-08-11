@@ -16,6 +16,10 @@ shutdown vm, then edit the vm .vmx file that is vm configuration file(in the vm 
 
 `cat /proc/interrupts | grep ens`
 
+or
+
+`ls -1 /sys/devices/*/*/<pci_number>/msi_irqs`
+
 3.create virtual network for thoese nics
 
 you can create any host only network for thoese nics for communication.

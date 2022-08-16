@@ -19,3 +19,7 @@
 - centos7 update gcc version
 
 install **devtoolset-7-gcc.x86_64**, need addition yum repository
+
+- build rpm from installed package
+
+using `rpmrebuild` commnand

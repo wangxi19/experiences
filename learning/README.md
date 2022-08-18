@@ -17,7 +17,16 @@ Pass option as an option to the linker.  If option contains commas, it is split 
 
 so gcc statically link: gcc -Wl,-static or gcc -Wl,-Bstatic
 
+ 3. address sanitizer
  
+ enable address sanitizer (for detecting buffer overflow, used after free ...)
+ ```bash
+ #install the address sanitizer package
+ yum install libasan.x86_64
+ # enable address sanitize in gcc
+ gcc -fsanitize=address -g3 -O0 -o junk ./junk.c
+ ```
+ just normally run the program, after buffer overflow or used memory after free ..., the program will exit with detail memory error message( ./junk 2>./mem_err.log)
  
 ### Writing Efficient Code (C, C++ family)
  

@@ -1,6 +1,6 @@
 # gdb script
 
-a simplest example, intend to descript gdb auto-script usage
+a simplest example, intend to descript the usage of gdb auto-script
 
 - background
 

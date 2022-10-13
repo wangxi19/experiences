@@ -19,7 +19,7 @@ so gdb auto-script is raised
 ```shell
   gcc -g3 -O0 -o dbg ./main.c
   gdb ./dbg -x ./dbg.gdb
-  cat /tmp/dbg.gdb
+  cat /tmp/dbg.output
 ```
 
 - method 2
@@ -27,7 +27,7 @@ so gdb auto-script is raised
 ```
   gcc -g3 -O0 -o dbg ./main.c
   gdb -batch -ex "file ./dbg" -ex "source ./dbg.gdb"
-  cat /tmp/dbg.gdb
+  cat /tmp/dbg.output
 ```
 
 ### Explain

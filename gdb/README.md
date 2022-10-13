@@ -33,3 +33,7 @@ so gdb auto-script is raised
 ### Explain
 
 see ./dbg.gdb
+
+### More tips about gdb
+
+https://github.com/wangxi19/100-gdb-tips

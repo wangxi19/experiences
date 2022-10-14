@@ -13,7 +13,10 @@ set variable $idx = 3
 #set breakpoint, if the breakpoint is hit, then set a watchpoint to watch the function local variable
 break main.c:26 if idx > 120 && idx < 150
   commands 1
-  watch r->pool
+#  watch r->pool
+# using the absolute memory address to watch, avoid invalid watch expression due to the r changes because recursively call func1  
+  set variable $addr = (uint64_t)(&r->pool)
+  watch *(uint64_t*)($addr)
   c
 end
 

@@ -79,3 +79,43 @@ file ./foo.o
 #gcc -shared
 # or gcc -Lxxx -lxxx
 ```
+
+## 运行原理
+
+### 反汇编查看磁盘上的main运行逻辑
+
+使用 `objdump -D ./main` 查看, 注意之前所有编译加上 **-g3 -O0**参数, -O0让代码不被优化, 看到原始逻辑, -g3生成额外的debug相关section, 方便gdb查看
+
+查看main中调用foo函数
+![objdump_main_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_1.png)
+
+跳转到plt表中 foo@plt
+![objdump_main_2.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_2.png)
+
+
+![objdump_main_3.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_3.png)
+
+
+![objdump_main_4.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_4.png)
+
+
+![objdump_main_5.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_5.png)
+
+
+### gdb查看加载到内存中的main运行逻辑
+
+使用 `gdb main` 查看.
+
+一开始调用foo
+
+![gdb_main_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_1.png)
+
+![gdb_main_2.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_2.png)
+
+![gdb_main_3.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_3.png)
+
+![gdb_main_4.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_4.png)
+
+运行一次之后, foo这条 rela.plt已经被relocate了
+
+![gdb_main_5.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_5.png)

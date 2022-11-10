@@ -176,4 +176,4 @@ disassemble 查看, 每个函数的前两条汇编指令都为
 若gcc编译时, 带有 -fomit-frame-pointer 参数, 则不会使用rbp, 完全用rsp+偏移来定位堆栈。函数中也没有 `push %rbp` 和 `mov    %rsp,%rbp`两条指令了
 
 rbp、rsp、retaddr都为指针, 保存着对应的地址, 指针sizeof 为8个字节。
-当然熟悉了栈的内存分布以后, 从oof中找到rbp的内存位置, 可直接 ((uint64_t*)&b) + 1, 因为它就在b之前
+当然熟悉了栈的内存分布以后, 从oof中找到rbp的内存位置, 可直接 ((long long*)&b) + 1, 因为它就在b之前

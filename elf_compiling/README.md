@@ -103,6 +103,14 @@ got中保存着符号的地址
 ![objdump_main_5.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_5.png)
 
 
+而gvar是存在于.bss section中(未初始化的变量存在于.bss中), 未relocate, 对应地址空间上全为0
+
+![objdump_main_gvar_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_gvar_1.png)
+
+
+![objdump_main_gvar_2.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_gvar_2.png)
+
+
 ### gdb查看加载到内存中的main运行逻辑
 
 使用 `gdb main` 查看.
@@ -123,3 +131,9 @@ got中保存着符号的地址
 运行一次之后, foo这条 rela.plt已经被relocate了
 
 ![gdb_main_5.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_5.png)
+
+若在gdb中 `set environment LD_BIND_NOW=1`, 则foo@plt所指向的got中的记录在程序一开始加载到内存中时, 就会relocate
+
+
+而gvar在程序加载到内存中时, 就relocate。也就是r 后, 到main之前。如图 gvar已经被relocate, 值为1024。具体的relocate算法根据rel的类型不同而不同, 此处gvar的rel类型为 R_X86_64_COPY,即把gvar的值从so中拷贝到main里的gvar
+![gdb_main_gvar_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_gvar_1.png)

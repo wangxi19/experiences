@@ -137,3 +137,43 @@ got中保存着符号的地址
 
 而gvar在程序加载到内存中时, 就relocate。也就是r 后, 到main之前。如图 gvar已经被relocate, 值为1024。具体的relocate算法根据rel的类型不同而不同, 此处gvar的rel类型为 R_X86_64_COPY,即把gvar的值从so中拷贝到main里的gvar
 ![gdb_main_gvar_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_gvar_1.png)
+
+### 程序运行时, 栈的使用
+
+程序运行时, 栈的地址空间是从高地址到低地址
+程序运行时, 从.text section, 也就是代码区一条一条读取指令, CPU执行指令。一些与栈相关的指令会操作栈, push入栈操作, 将值写到栈上。执行函数调用指令call时, CPU也会隐式的进行入栈操作, 将当前执行的指令地址入栈(retaddr), 以便call 函数调用完毕后, 能跳转回之前执行的位置继续执行
+
+寄存器 rbp保存当前函数的栈底地址, rsp保存当前函数的栈顶地址
+
+拿 main举例, 当执行到 oof函数中时, 堆栈如图:
+
+
+![stack.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/stack.png)
+
+```
+--- main --- 0x00400620
+[rbp - 0x00] <- 0x7fffffffda50
+[argv]
+[argc]
+--- foo --- 0x7ffff7bd9657
+[retaddr - 0x00400620] <- 0x7fffffffda40+8
+[rbp - 0x7fffffffda50] <- 0x7fffffffda40
+[int b]
+[int a]
+--- oof ---
+[retaddr - 0x7ffff7bd9657] <- 0x7fffffffda20 + 8
+[rbp - 0x7fffffffda40] <- 0x7fffffffda20
+[int b]
+[int a]
+[rsp]
+```
+
+disassemble 查看, 每个函数的前两条汇编指令都为 
+
+`push   %rbp`, 把当前的栈底地址入栈. 这就是栈空间上 [rbp] 的来源
+`mov    %rsp,%rbp`, 把当前的栈顶地址作为栈底地址
+
+若gcc编译时, 带有 -fomit-frame-pointer 参数, 则不会使用rbp, 完全用rsp+偏移来定位堆栈。函数中也没有 `push %rbp` 和 `mov    %rsp,%rbp`两条指令了
+
+rbp、rsp、retaddr都为指针, 保存着对应的地址, 指针sizeof 为8个字节。
+当然熟悉了栈的内存分布以后, 从oof中找到rbp的内存位置, 可直接 ((uint64_t*)&b) + 1, 因为它就在b之前

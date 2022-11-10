@@ -46,13 +46,23 @@ file ./foo.o
 [IMG file_foo.o.png]
 ```
 
-### linking
+### 链接(linking)
 
-链接生成executable file 或者 shared library (.so)。生成.a没有做链接, 只是把一堆.o文件打成一个.a压缩包
+调用ld, 链接生成executable file 或者 shared library (.so)。生成.a没有做链接, 只是把一堆.o文件打成一个.a压缩包
 
-- do relocate for all rel section
+不管是生成exe或.so文件, 首先会对.o文件进行relocate
 
-- reform rel[a].dyn and rel[a].plt section as needed
+把.o的所有 rel[a] section relocated。
+
+若生成exe文件, .o中有用到其它库的符号, 会重新为exe生成 rel[a].dyn 和 rel[a].plt section, rel[a].dyn用来relocate那些外部的变量, 会在程序一开始加载进内存, ld就会对其进行relocate(因为程序加载进内存后, 包括所有的第三方库.so也加载进了内存, 那么那些.so的地址也就确定了, .so中的符号的地址也就确定了, 所以此时可做relocate), 
+
+然后再把控制权转交给程序。而 rel[a].plt 用来relocate那些使用到的外部函数, 之所以和rel[a].dyn分开是因为若不设置 LD_BIND_NOW 环境变量的话, rel[a].plt中的条目采用lazy relocate的方
+式, 只有第一次调用这个函数的时候才会进行relocate, 设置了 LD_BIND_NOW(LD_BIND_NOW不为空), 那么rel[a].plt也和rel[a].dyn一样, 程序一开始加载进内存后, 就会relocate
+
+若生成.so文件, 与exe相同, .so中若有用到其它库的符号, 会重新为.so生成 rel[a].dyn 和 rel[a].plt section, 特别注意的是即使.so中没有用到其它库的符号, 用到了自己定义的函数(不在同一个.o中, foo.c中用到了oof.c中的oof函数), 也会重新生成rel[a].plt section, 因为.so每次加载进来的初始地址不同, 所以里面的函数每次的地址都不同, 无法使用绝对地址
+
+关于dynamic相关的可查看 `readelf -d xxx`
+
 
 ```
 #gcc -shared

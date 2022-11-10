@@ -92,13 +92,14 @@ file ./foo.o
 跳转到plt表中 foo@plt
 ![objdump_main_2.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_2.png)
 
-
+再从plt表跳到got中的对应记录, 所有的Position independent code 都使用got表做跳转
 ![objdump_main_3.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_3.png)
 
-
+got中再跳回到foo@plt, 再跳到plt的第一条记录
 ![objdump_main_4.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_4.png)
 
-
+再跳到got中的对应记录, 此时还未relocate, 为0. 见红色
+got中保存着符号的地址
 ![objdump_main_5.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/objdump_main_5.png)
 
 
@@ -110,10 +111,13 @@ file ./foo.o
 
 ![gdb_main_1.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_1.png)
 
+反汇编对应地址 (foo@plt), 与磁盘上main objdump查看一致
 ![gdb_main_2.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_2.png)
 
+查看对应got表中的记录, 发现其指回foo@plt(400516), 再跳转到plt表(4004f0)
 ![gdb_main_3.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_3.png)
 
+再从plt表跳转到对应got中的记录601010(此时就与磁盘上的main有区别了), 记录的地址指向 dl_runtime_resolve, dl运行relocate
 ![gdb_main_4.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/gdb_main_4.png)
 
 运行一次之后, foo这条 rela.plt已经被relocate了

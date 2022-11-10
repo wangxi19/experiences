@@ -10,8 +10,8 @@
 ```
 gcc -E -o ./foo.e ./foo.c
 cat ./foo.e
-[IMG cat_foo.e.png]
 ```
+![cat_foo.e.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/cat_foo.e.png)
 
 ### 汇编(assembly)
 
@@ -20,8 +20,8 @@ cat ./foo.e
 ```
 gcc -S -o ./foo.s ./foo.c
 cat ./foo.s
-[IMG cat_foo.s.png]
 ```
+![cat_foo.s.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/cat_foo.s.png)
 
 ### 编译(compiling)
 
@@ -31,20 +31,27 @@ cat ./foo.s
 
 可用 `readelf -S foo.o` 查看其所有section的viraddr 都还没有分配
 
+![readelf_S_foo.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_S_foo.o.png)
+
 可用 `readelf -r foo.o` 查看其还有rel[a] section, 还没有relocate
+
+![readelf_r_foo.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_r_foo.o.png)
 
 
 注意 foo.c中用到了oof.c中定义的函数, 编译的时候这个函数(也叫符号 symbol, elf中变量和函数都叫symbol)还未定义, 所以会对此产生一条rel记录(`readelf -r foo.o | grep oof`),
 
 若编译 foo.o时未使用 -fPIC参数, 那么在老版本的gcc, 这条rel记录的类型就为 **R_X86_64_PC32**, 这种类型的rel用来生成.so是不行的， 因为链接时, 对这条记录relocate是直接把绝对地址写到这个符号(oof)上, 而.so每次被加载进来的初始地址都不同, oof在.so中, 所以oof每次的地址也不同, 所以不能用绝对地址。
 
-若编译foo.o时使用了 -fPIC参数, 这条rel记录的类型就为 **R_X86_64_PLT32**, 这种类型的符号就position independent code, 当链接时 对这条记录relocate, 会把这个符号的指向plt中的相应的记录, 跳转到plt后, 再通过plt表去寻找正在的符号地址(运行原理会详细介绍)
+若编译foo.o时使用了 -fPIC参数(编译成了foo.fpic.o), 这条rel记录的类型就为 **R_X86_64_PLT32**, 这种类型的符号就position independent code, 当链接时 对这条记录relocate, 会把这个符号的指向plt中的相应的记录, 跳转到plt后, 再通过plt表去寻找正在的符号地址(运行原理会详细介绍)
+
+![readelf_r_foo.fpic.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_r_foo.fpic.o.png)
 
 ```
 gcc -c -o foo.o ./foo.s
 file ./foo.o
 [IMG file_foo.o.png]
 ```
+![file_foo.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/file_foo.o.png)
 
 ### 链接(linking)
 
@@ -59,7 +66,11 @@ file ./foo.o
 然后再把控制权转交给程序。而 rel[a].plt 用来relocate那些使用到的外部函数, 之所以和rel[a].dyn分开是因为若不设置 LD_BIND_NOW 环境变量的话, rel[a].plt中的条目采用lazy relocate的方
 式, 只有第一次调用这个函数的时候才会进行relocate, 设置了 LD_BIND_NOW(LD_BIND_NOW不为空), 那么rel[a].plt也和rel[a].dyn一样, 程序一开始加载进内存后, 就会relocate
 
+![readelf_r_main.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_r_main.png)
+
 若生成.so文件, 与exe相同, .so中若有用到其它库的符号, 会重新为.so生成 rel[a].dyn 和 rel[a].plt section, 特别注意的是即使.so中没有用到其它库的符号, 用到了自己定义的函数(不在同一个.o中, foo.c中用到了oof.c中的oof函数), 也会重新生成rel[a].plt section, 因为.so每次加载进来的初始地址不同, 所以里面的函数每次的地址都不同, 无法使用绝对地址
+
+![readelf_r_libfoof.so.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_r_libfoof.so.png)
 
 关于dynamic相关的可查看 `readelf -d xxx`
 

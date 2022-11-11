@@ -73,7 +73,7 @@ fPIC的使用只需在编译生成.o阶段。
 若符号属于此executable文件, 则在ld时就能获取符号的绝对viraddr, 能对 **R_X86_64_PC32** relocate, 生成的exe文件就不会再对此符号重新创建 **R_X86_64_JUMP_SLO** rel条目了, 因为此符号已经reloccate了。
 若符号属于其它.so文件, ld做法与生成.so相同, 为**R_X86_64_PC32**的符号重新创建一条**R_X86_64_JUMP_SLO**的条目。
 
-现在的linux都支持ASLR(address space layout randomization), 导致executable文件加载到内存运行时, 每次它的起始地址也随机。但是原则上executable每个segment加载到内存的viraddr都会按照segment定义的地址来。操作系统层面的ASLR不影响我们把exectable理解为地址固定(不像.so每次加载进来的起始位置是真随机, 所以.so里面的符号viraddr在ld阶段是拿不到的), 所以executable中的所有符号在ld的阶段时就能够固定了(能计算出来), 能拿到每个符号的viraddr。
+现在的linux都支持ASLR(address space layout randomization), 导致executable文件加载到内存运行时, 每次它的起始地址也随机。但是原则上executable每个segment加载到内存的viraddr都会按照segment定义的地址来。操作系统层面的ASLR不影响我们把exectable理解为地址固定(不像.so每次加载进来的起始位置是真随机, 所以.so里面的符号viraddr在ld阶段是拿不到的), 所以executable中的所有符号的viraddr在ld的阶段时就能够固定了(能计算出来), 能拿到每个符号的viraddr。
 
 关闭ASLR `echo 0 > /proc/sys/kernel/randomize_va_space`
 

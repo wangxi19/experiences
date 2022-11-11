@@ -67,7 +67,7 @@ fPIC的使用只需在编译生成.o阶段。
 
 若.c文件使用了未定义的符号, 此时生成.o 文件会针对这些未定义的符号创建 rel[a].text section 条目, 一个符号创建一条, 表示这些 .o文件在后续ld生成.so 或 executable文件时, 需要对其relocate. 若生成.o时未带参数 `-fPIC`, 则未定义的符号在 rel[a].text section中的条目, rel type就为**R_X86_64_PC32**, 带了 `-fPIC` 参数rel type 为**R_X86_64_PLT32**。
 
-**R_X86_64_PC32**类型的.o文件是不能ld为.so文件的, 不管**R_X86_64_PC32**对应的这个符号是属于此.so中(用于生成此.so的其它.o文件中)还是属于其它的.so中, 这是因为这种 rel type使用的是绝对地址, 若符号属于此.so中, 对于.so 每次被加载进内存的地址都不相同, 所以也无法在ld生成.so时relocate, 因为程序未运行 无法固定符号的viraddr. 若符号属于其它.so中一样的, 在ld时无法固定符号的viraddr, 所以不能relocate **R_X86_64_PC32**。所以需要`-fPIC` 参数rel type 为**R_X86_64_PLT32**, 在 ld生成.so时, relocate .o的**R_X86_64_PLT32**, 虽然此时也无法固定符号的viraddr, 但是会再重新生成一条 rel[a].plt section条目, rel type 为 **R_X86_64_JUMP_SLO**, 生成的.so中符号被最终定位到.got表的对应条目中, 在程序完全加载到内存中后, 根据LD_BIND_NOW的设置来立刻relocate或者lazy relocate
+**R_X86_64_PC32**类型的.o文件是不能ld为.so文件的, 不管**R_X86_64_PC32**对应的这个符号是属于此.so中(用于生成此.so的其它.o文件中)还是属于其它的.so中, 这是因为这种 rel type使用的是绝对地址, 若符号属于此.so中, 对于.so 每次被加载进内存的地址都不相同, 所以也无法在ld生成.so时relocate, 因为程序未运行 无法固定符号的viraddr. 若符号属于其它.so中一样的, 在ld时无法固定符号的viraddr, 所以不能relocate **R_X86_64_PC32**。所以需要`-fPIC` 参数rel type 为**R_X86_64_PLT32**, 在 ld生成.so时, relocate .o的**R_X86_64_PLT32**, 虽然此时也无法固定符号的viraddr, 但是会为此符号再重新生成一条 rel type 为 **R_X86_64_JUMP_SLO** 的 rel[a].plt section条目在.so中, 移除原来的**R_X86_64_PLT32**条目, 生成的.so中符号被最终定位到.got表的对应条目中, 在程序完全加载到内存中后(完全加载是指exectable文件和它依赖的所有.so文件都被加载到内存中, 分配好了内存位置), 根据LD_BIND_NOW的设置来立刻relocate或者lazy relocate **R_X86_64_JUMP_SLO**
 
 但**R_X86_64_PC32**类型的.o文件是能ld为executable文件的.不管**R_X86_64_PC32**对应的这个符号是属于此 executable文件(用于生成此exe文件的其它.o文件)还是属于其它的.so中。
 若符号属于此executable文件, 则在ld时就能获取符号的绝对viraddr, 能对 **R_X86_64_PC32** relocate, 生成的exe文件就不会再对此符号创建rel条目了, 因为此符号已经reloccate了。

@@ -55,6 +55,29 @@ file ./foo.o
 ```
 ![file_foo.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/file_foo.o.png)
 
+--- 
+
+- **fPIC用法**
+
+程序编译最终生成两种类型文件, .so 或 executable 文件, 这两种文件又都是由 .o文件ld链接生成。
+
+fPIC的使用只需在编译生成.o阶段。 
+
+.o对应一个.c文件, 若这个.c文件中使用到了未定义的符号(符号是值变量或函数, 未定义是指在当前.c文件及其所有包含的头文件中未定义, 因为编译生成.o文件时, 编译器的视界只看到当前.c文件及其所包含的所有头文件{头文件实际上在预编译的时候把所有内容都写到了.c文件中}, 看不到其它.c文件, 看到其它.c文件{这里的其它.c文件是指.c生成的.o文件 或 .c生成的.so文件}是在ld链接的步骤).
+
+若.c文件使用了未定义的符号, 此时生成.o 文件会针对这些未定义的符号创建 rel[a].text section 条目, 一个符号创建一条, 表示这些 .o文件在后续ld生成.so 或 executable文件时, 需要对其relocate. 若生成.o时未带参数 `-fPIC`, 则未定义的符号在 rel[a].text section中的条目, rel type就为**R_X86_64_PC32**, 带了 `-fPIC` 参数rel type 为**R_X86_64_PLT32**。
+
+**R_X86_64_PC32**类型的.o文件是不能ld为.so文件的, 不管**R_X86_64_PC32**对应的这个符号是属于此.so中(用于生成此.so的其它.o文件中)还是属于其它的.so中, 这是因为这种 rel type使用的是绝对地址, 若符号属于此.so中, 对于.so 每次被加载进内存的地址都不相同, 所以也无法在ld生成.so时relocate, 因为程序未运行 无法固定符号的viraddr. 若符号属于其它.so中一样的, 在ld时无法固定符号的viraddr, 所以不能relocate **R_X86_64_PC32**。所以需要`-fPIC` 参数rel type 为**R_X86_64_PLT32**, 在 ld生成.so时, relocate .o的**R_X86_64_PLT32**, 虽然此时也无法固定符号的viraddr, 但是会再重新生成一条 rel[a].plt section条目, rel type 为 **R_X86_64_JUMP_SLO**, 生成的.so中符号被最终定位到.got表的对应条目中, 在程序完全加载到内存中后, 根据LD_BIND_NOW的设置来立刻relocate或者lazy relocate
+
+但**R_X86_64_PC32**类型的.o文件是能ld为executable文件的.不管**R_X86_64_PC32**对应的这个符号是属于此 executable文件(用于生成此exe文件的其它.o文件)还是属于其它的.so中。
+若符号属于此executable文件, 则在ld时就能获取符号的绝对viraddr, 能对 **R_X86_64_PC32** relocate, 生成的exe文件就不会再对此符号创建rel条目了, 因为此符号已经reloccate了。
+若符号属于其它.so文件, ld做法与生成.so相同, 为**R_X86_64_PC32**的符号重新创建一条**R_X86_64_JUMP_SLO**的条目。
+
+现在的linux都支持ASLR(address space layout randomization), 导致executable文件加载到内存运行时, 每次它的起始地址也随机。但是原则上executable每个segment加载到内存的viraddr都会按照segment定义的地址来。操作系统层面的ASLR不影响我们把exectable理解为地址固定(不像.so每次加载进来的起始位置是真随机, 所以.so里面的符号viraddr在ld阶段是拿不到的), 所以executable中的所有符号在ld的阶段时就能够固定了(能计算出来), 能拿到每个符号的viraddr。
+
+关闭ASLR `echo 0 > /proc/sys/kernel/randomize_va_space`
+
+
 ### 链接(linking)
 
 调用ld, 链接生成executable file 或者 shared library (.so)。生成.a没有做链接, 只是把一堆.o文件打成一个.a压缩包

@@ -44,7 +44,7 @@ cat ./foo.s
 
 若编译 foo.o时未使用 -fPIC参数, 那么在老版本的gcc, 这条rel记录的类型就为 **R_X86_64_PC32**, 这种类型的rel用来生成.so是不行的， 因为链接时, 对这条记录relocate是直接把绝对地址写到这个符号(oof)上, 而.so每次被加载进来的初始地址都不同, oof在.so中, 所以oof每次的地址也不同, 所以不能用绝对地址。
 
-若编译foo.o时使用了 -fPIC参数(编译成了foo.fpic.o), 这条rel记录的类型就为 **R_X86_64_PLT32**, 这种类型的符号就position independent code, 当链接时 对这条记录relocate, 会把这个符号的指向plt中的相应的记录, 跳转到plt后, 再通过plt表去寻找正在的符号地址(运行原理会详细介绍)
+若编译foo.o时使用了 -fPIC参数(编译成了foo.fpic.o), 这条rel记录的类型就为 **R_X86_64_PLT32**, 这种类型的符号就position independent code, 当链接时 对这条记录relocate, 会把这个符号的指向plt中的相应的记录, 跳转到plt后, 再通过plt表去寻找正确的符号地址(运行原理会详细介绍)
 
 ![readelf_r_foo.fpic.o.png](https://github.com/wangxi19/experiences/blob/master/elf_compiling/imgs/readelf_r_foo.fpic.o.png)
 

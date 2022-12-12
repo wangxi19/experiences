@@ -1,4 +1,4 @@
-# gdb script
+## gdb script
 
 ### Overview
 
@@ -37,3 +37,15 @@ see ./dbg.gdb
 ### More tips about gdb
 
 https://github.com/wangxi19/100-gdb-tips
+
+## gdb convenience variable
+
+### display all convenience variables
+
+```
+show convenience
+```
+
+- $_siginfo
+
+information about signal, contains signo, sender ...

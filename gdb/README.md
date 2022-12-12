@@ -49,3 +49,8 @@ show convenience
 - $_siginfo
 
 information about signal, contains signo, sender ...
+but if signal is SIGKILL, $_siginfo will be void because SIGKILL cann't be caught, and the subprocess wil exit immediately
+now using systemtap to minitor which process sent the SIGKILL
+```
+man stap
+```

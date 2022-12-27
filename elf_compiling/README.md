@@ -200,5 +200,33 @@ disassemble 查看, 每个函数的前两条汇编指令都为
 
 若gcc编译时, 带有 -fomit-frame-pointer 参数, 则不会使用rbp, 完全用rsp+偏移来定位堆栈。函数中也没有 `push %rbp` 和 `mov    %rsp,%rbp`两条指令了
 
-rbp、rsp、retaddr都为指针, 保存着对应的地址, 指针sizeof 为8个字节。
+rbp、rsp、retaddr(retaddr保存着caller指令的地址, callee执行完后会跳到retaddr的地址执行对应指令)都为指针, 保存着对应的地址, 指针sizeof 为8个字节。
 当然熟悉了栈的内存分布以后, 从oof中找到rbp的内存位置, 可直接 ((long long*)&b) + 1, 因为它就在b之前
+
+
+程序的栈结构如下
+```
+direction of     |                                 |
+  growth of      +---------------------------------+ 
+   stack         | Parameters passed by fn1(caller)|
+from higher addr.|                                 |
+to lower addr.   | Direction of growth is opposite |
+      |          |   to direction of stack growth  |
+      |          +---------------------------------+ <-- SP on entry to fn2
+      |          | Return address from fn2(callee) | <-- 保存着返回的地址, fn2执行完后, 返回到该地址上执行该地址上的指令
+      V          +---------------------------------+ 
+                 | Callee saved registers being    | 
+                 |   used in the callee function   | <-- 目前就保存了rbp, 即上一个栈的栈底位置
+                 +---------------------------------+
+                 | Local variables of fn2          |
+                 |(Direction of growth of frame is |
+                 | same as direction of growth of  |
+                 |            stack)               |
+                 +---------------------------------+ 
+                 | Arguments to functions called   |
+                 | by fn2                          |
+                 +---------------------------------+ <- Current SP after stack 
+                                                        frame is allocated
+```
+reference https://stackoverflow.com/questions/1677415/does-stack-grow-upward-or-downward 
+Ganesh Gopalasubramanian

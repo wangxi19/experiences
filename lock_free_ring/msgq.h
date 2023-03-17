@@ -14,8 +14,7 @@
 
 typedef struct msg_q_s
 {
-    const char* name;
-    void* addr;
+    char name[64];
     unsigned int nelts;
     unsigned int capacity;
     unsigned int szelt;
@@ -83,10 +82,6 @@ static inline void destroy_shared_memory(const char* name, void* addr, size_t sz
 
 static void reset_msg_queue(msg_q* msgq)
 {
-    //    msgq->name = NULL;
-    //    msgq->addr = NULL;
-    //    msgq->nelts = 0;
-    //    msgq->szelt = 0;
     msgq->celt_head = 0;
     msgq->celt_tail = 0;
     msgq->pelt_head = 0;
@@ -104,14 +99,13 @@ static void reset_msg_queue(msg_q* msgq)
  */
 static int create_msg_queue(const char* name, unsigned int nelts, unsigned int szelt, msg_q** out)
 {
-    *out = create_shared_memory(name, sizeof(msg_q) + nelts * sizeof(void*) + nelts * szelt);
+    *out = create_shared_memory(name, sizeof(msg_q) + nelts * szelt);
     if (*out == (void *) -1)
     {
         perror("mmap");
         return -1;
     }
-    (*out)->name = name;
-    (*out)->addr = (char*)(*out) + sizeof(msg_q);
+    strcyp((*out)->name, name);
     (*out)->nelts = nelts;
     (*out)->capacity = nelts - 1;
     (*out)->szelt = szelt;
@@ -154,7 +148,7 @@ static int msg_enqueue_mp(msg_q* msgq, const void* msg)
         success = atomic_compare_exchange_strong(&msgq->pelt_head, &oi, ni);
     } while (success == 0);
     //do enqueue
-    memcpy((char*)msgq->addr + mod(oi, msgq->nelts) * msgq->szelt, msg, msgq->szelt);
+    memcpy((char*)msgq + sizeof(msg_q) + mod(oi, msgq->nelts) * msgq->szelt, msg, msgq->szelt);
 
     smp_wmb();
     /* **update tail
@@ -192,7 +186,7 @@ static int msg_dequeue_mp(msg_q* msgq, void* msg)
         success = atomic_compare_exchange_strong(&msgq->celt_head, &oi, ni);
     } while (success == 0);
     //do dequeue
-    memcpy(msg, (char*)msgq->addr + mod(oi, msgq->nelts) * msgq->szelt, msgq->szelt);
+    memcpy(msg, (char*)msgq + sizeof(msg_q) + mod(oi, msgq->nelts) * msgq->szelt, msgq->szelt);
     smp_rmb();
     /* **update tail
     * If there are other enqueues/dequeues in progress that preceded us,
